@@ -11,14 +11,14 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: ENV.NODE_ENV !== "development",
-            sameSite: ENV.NODE_ENV === "development" ? 'none' : 'strict',
+            sameSite: 'lax',
             maxAge: 60 * 60 * 1000,
         });
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: ENV.NODE_ENV !== "development",
-            sameSite: ENV.NODE_ENV === "development" ? 'none' : 'strict',
+            sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         res.status(200).json({ success: true, data: user });
@@ -37,14 +37,14 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: ENV.NODE_ENV !== "development",
-            sameSite: ENV.NODE_ENV === "development" ? 'none' : 'strict',
+            sameSite: 'lax',
             maxAge: 60 * 60 * 1000,
         });
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: ENV.NODE_ENV !== "development",
-            sameSite: ENV.NODE_ENV === "development" ? 'none' : 'strict',
+            sameSite: 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         res.status(200).json({ success: true, data: user });
@@ -68,14 +68,14 @@ export const logout = async (_req: Request, res: Response, next: NextFunction) =
         res.clearCookie('accessToken', {
             httpOnly: true,
             secure: ENV.NODE_ENV !== "development",
-            sameSite: ENV.NODE_ENV === "development" ? 'none' : 'strict',
+            sameSite: 'lax',
             path: '/'
         });
 
         res.clearCookie('refreshToken', {
             httpOnly: true,
             secure: ENV.NODE_ENV !== "development",
-            sameSite: ENV.NODE_ENV === "development" ? 'none' : 'strict',
+            sameSite: 'lax',
             path: '/'
         });
     } catch (error) {
