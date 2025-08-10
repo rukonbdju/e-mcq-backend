@@ -12,7 +12,7 @@ export const findUserByEmail = async (email: string) => {
 };
 
 // 2. Find user by ID
-export const findUserById = async (userId: number) => {
+export const findUserById = async (userId: string) => {
     const res = await db.query.users.findFirst({
         where: eq(users.id, userId),
     });
@@ -24,6 +24,7 @@ export const createUser = async (userInfo: {
     name: string;
     email: string;
     password: string;
+    role: string;
 }) => {
     const res = await db.insert(users)
         .values(userInfo)

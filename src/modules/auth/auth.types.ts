@@ -2,7 +2,7 @@ export interface SignupInput {
     name: string;
     email: string;
     password: string;
-    role: 'Student' | 'Examiner';
+    role: 'Student' | 'Teacher' | "Admin";
 }
 
 export interface LoginInput {
