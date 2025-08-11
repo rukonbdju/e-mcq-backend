@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ENV } from '../config/env.config';
 import { generateToken, verifyAccessToken, verifyRefreshToken } from '../modules/auth/auth.utils';
+import { TokenPayload } from '../modules/auth/auth.types';
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies?.accessToken;
@@ -35,9 +36,9 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
 const refreshTokens = async (req: Request, res: Response) => {
     const refreshToken = req.cookies?.refreshToken;
-    const decoded = verifyRefreshToken(refreshToken) as { userId: number };
+    const decoded = verifyRefreshToken(refreshToken) as TokenPayload;
 
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = generateToken({ userId: decoded.userId });
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = generateToken({ userId: decoded.userId, role: decoded.role });
 
     // In dev: secure: false so cookies aren't blocked over HTTP
     const cookieOptions = {

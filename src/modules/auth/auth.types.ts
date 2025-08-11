@@ -11,5 +11,6 @@ export interface LoginInput {
 }
 
 export interface TokenPayload {
-    userId: number;
+    userId: string;
+    role: string;
 }

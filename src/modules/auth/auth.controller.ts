@@ -7,7 +7,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
     try {
         const { name, role, email, password } = req.body
         const user = await authService.signup({ name, role, email, password });
-        const { accessToken, refreshToken } = generateToken({ userId: user.id })
+        const { accessToken, refreshToken } = generateToken({ userId: user.id, role: user.role })
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: ENV.NODE_ENV !== "development",
@@ -32,7 +32,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         const { email, password } = req.body
         console.log(req.body)
         const user = await authService.login({ email, password });
-        const { accessToken, refreshToken } = generateToken({ userId: user.id })
+        const { accessToken, refreshToken } = generateToken({ userId: user.id, role: user.role })
         console.log({ accessToken, refreshToken })
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
@@ -78,6 +78,7 @@ export const logout = async (_req: Request, res: Response, next: NextFunction) =
             sameSite: 'lax',
             path: '/'
         });
+        res.json({ success: true, message: 'Logout Successful' })
     } catch (error) {
         next(error)
     }
