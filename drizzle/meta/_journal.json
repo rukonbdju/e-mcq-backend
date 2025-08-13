@@ -8,6 +8,20 @@
       "when": 1754848768969,
       "tag": "0000_huge_brother_voodoo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1755094679485,
+      "tag": "0001_chubby_black_bird",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1755094880908,
+      "tag": "0002_goofy_thunderball",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,4 @@
-import {
-    pgTable, uuid, text, varchar, timestamp, integer, boolean, jsonb,
-    primaryKey, index
-} from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, varchar, timestamp, integer, boolean, jsonb, } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 // ===== Users Table =====
@@ -11,11 +8,10 @@ export const users = pgTable("users", {
     email: varchar("email", { length: 255 }).notNull().unique(),
     password: varchar("password", { length: 255 }).notNull(),
     role: varchar("role", { length: 20 }).notNull(), // admin | teacher | student
+    status: varchar("status").default("Regular"),
     isActive: boolean("is_active").default(true),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-}, (table) => ({
-    roleIdx: index("users_role_idx").on(table.role),
-}));
+});
 
 export const usersRelations = relations(users, ({ many }) => ({
     questions: many(questions),
@@ -43,9 +39,7 @@ export const topics = pgTable("topics", {
         .notNull(),
     name: text("name").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-}, (table) => ({
-    subjectIdx: index("topics_subject_idx").on(table.subjectId),
-}));
+});
 
 export const topicsRelations = relations(topics, ({ one, many }) => ({
     subject: one(subjects, {
@@ -68,12 +62,7 @@ export const questions = pgTable("questions", {
     options: jsonb("options").notNull(), // [{id: 'A', text: 'Option 1'}, ...]
     correctAnswer: varchar("correct_answer", { length: 5 }).notNull(), // e.g. "A"
     createdAt: timestamp("created_at").defaultNow().notNull(),
-}, (table) => ({
-    teacherIdx: index("questions_teacher_idx").on(table.teacherId),
-    subjectIdx: index("questions_subject_idx").on(table.subjectId),
-    topicIdx: index("questions_topic_idx").on(table.topicId),
-    levelIdx: index("questions_level_idx").on(table.level),
-}));
+});
 
 export const questionsRelations = relations(questions, ({ one, many }) => ({
     teacher: one(users, {
@@ -103,10 +92,7 @@ export const exams = pgTable("exams", {
     durationMinutes: integer("duration_minutes").notNull(),
     passingScore: integer("passing_score").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-}, (table) => ({
-    teacherIdx: index("exams_teacher_idx").on(table.teacherId),
-    scheduleIdx: index("exams_schedule_idx").on(table.scheduledTime),
-}));
+});
 
 export const examsRelations = relations(exams, ({ one, many }) => ({
     teacher: one(users, {
@@ -118,22 +104,15 @@ export const examsRelations = relations(exams, ({ one, many }) => ({
 }));
 
 // ===== Exam Questions (Join Table) =====
-export const examQuestions = pgTable(
-    "exam_questions",
-    {
-        examId: uuid("exam_id")
-            .references(() => exams.id)
-            .notNull(),
-        questionId: uuid("question_id")
-            .references(() => questions.id)
-            .notNull(),
-    },
-    (table) => ({
-        pk: primaryKey(table.examId, table.questionId),
-        examIdx: index("exam_questions_exam_idx").on(table.examId),
-        questionIdx: index("exam_questions_question_idx").on(table.questionId),
-    })
-);
+export const examQuestions = pgTable("exam_questions", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    examId: uuid("exam_id")
+        .references(() => exams.id)
+        .notNull(),
+    questionId: uuid("question_id")
+        .references(() => questions.id)
+        .notNull(),
+});
 
 export const examQuestionsRelations = relations(examQuestions, ({ one }) => ({
     exam: one(exams, {
@@ -158,10 +137,7 @@ export const studentExams = pgTable("student_exams", {
     score: integer("score").default(0),
     completedAt: timestamp("completed_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-}, (table) => ({
-    studentIdx: index("student_exams_student_idx").on(table.studentId),
-    examIdx: index("student_exams_exam_idx").on(table.examId),
-}));
+});
 
 export const studentExamsRelations = relations(studentExams, ({ one, many }) => ({
     student: one(users, {
@@ -186,10 +162,7 @@ export const studentAnswers = pgTable("student_answers", {
         .notNull(),
     chosenOption: varchar("chosen_option", { length: 5 }).notNull(),
     isCorrect: boolean("is_correct").notNull(),
-}, (table) => ({
-    studentExamIdx: index("student_answers_student_exam_idx").on(table.studentExamId),
-    questionIdx: index("student_answers_question_idx").on(table.questionId),
-}));
+});
 
 export const studentAnswersRelations = relations(studentAnswers, ({ one }) => ({
     studentExam: one(studentExams, {
