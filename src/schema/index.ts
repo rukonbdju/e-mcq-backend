@@ -52,14 +52,15 @@ export const topicsRelations = relations(topics, ({ one, many }) => ({
 // ===== Questions Table =====
 export const questions = pgTable("questions", {
     id: uuid("id").primaryKey().defaultRandom(),
-    teacherId: uuid("teacher_id")
-        .references(() => users.id)
-        .notNull(),
+    teacherId: uuid("teacher_id").references(() => users.id).notNull(),
     level: varchar("level", { length: 50 }).notNull(), // SSC, HSC, Job
     subjectId: uuid("subject_id").references(() => subjects.id).notNull(),
     topicId: uuid("topic_id").references(() => topics.id),
     questionText: text("question_text").notNull(),
-    options: jsonb("options").notNull(), // [{id: 'A', text: 'Option 1'}, ...]
+    optionOne: varchar("option_one").notNull(),
+    optionTwo: varchar("option_two").notNull(),
+    optionThree: varchar("option_three").notNull(),
+    optionFour: varchar("option_four").notNull(),
     correctAnswer: varchar("correct_answer", { length: 5 }).notNull(), // e.g. "A"
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
